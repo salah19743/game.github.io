@@ -1,72 +1,36 @@
 body {
-  font-family: 'Roboto', sans-serif;
-  background-color: #0e0e0e;
-  color: #fff;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+    font-family: Arial, sans-serif;
+    text-align: center;
 }
 
-.container {
-  text-align: center;
+h1 {
+    color: #333;
 }
 
-.game-area {
-  padding: 20px;
-  border: 2px solid #fff;
-  border-radius: 10px;
-  background-color: #1e1e1e;
-  margin-bottom: 20px;
+#game-container {
+    width: 300px;
+    height: 300px;
+    border: 1px solid #333;
+    margin: 20px auto;
+    position: relative;
 }
 
-button {
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  margin-top: 20px;
+#object {
+    width: 50px;
+    height: 50px;
+    background-color: red;
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: pointer;
 }
 
-button:hover {
-  background-color: #45a049;
+#game-controls {
+    margin-top: 20px;
 }
 
-#score {
-  font-size: 24px;
-  font-weight: bold;
-  color: #4caf50;
-}
-
-#multiplier {
-  font-size: 18px;
-  margin-top: 10px;
-}
-
-#questList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.leaderboard {
-  background-color: #1e1e1e;
-  border: 2px solid #fff;
-  border-radius: 10px;
-  padding: 20px;
-}
-
-#leaderboardList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-#leaderboardList li {
-  margin-bottom: 5px;
+#difficulty-select {
+    margin-top: 10px;
+    font-size: 16px;
+    padding: 5px;
 }
