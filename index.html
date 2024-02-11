@@ -1,30 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catch the Moving Object</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WordGuess</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    #word-display {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    input[type="text"] {
+      padding: 8px;
+      font-size: 16px;
+    }
+    #message {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-    <h1>Catch the Moving Object Game</h1>
-    <div id="game-container">
-        <div id="object"></div>
-    </div>
-    <div id="game-controls">
-        <p>Score: <span id="score">0</span></p>
-        <p>Time left: <span id="time-left">30</span> seconds</p>
-        <button id="start-btn">Start Game</button>
-        <div id="difficulty">
-            <label for="difficulty-select">Select Difficulty:</label>
-            <select id="difficulty-select">
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
-            </select>
-        </div>
-    </div>
+  <h1>WordGuess</h1>
+  <div id="word-display"></div>
+  <input type="text" id="guess-input" maxlength="5">
+  <button onclick="checkGuess()">Guess</button>
+  <div id="message"></div>
 
-    <script src="script.js"></script>
+  <script>
+    const words = ["apple", "banana", "cherry", "orange", "grape", "lemon", "kiwi", "melon", "pear", "peach"];
+    let secretWord = words[Math.floor(Math.random() * words.length)];
+    let maxAttempts = 6;
+    let attempts = 0;
+    let guessedWord = [];
+
+    function initializeGuessedWord() {
+      for (let i = 0; i < secretWord.length; i++) {
+        guessedWord.push('_');
+      }
+    }
+
+    function displayGuessedWord() {
+      document.getElementById('word-display').textContent = guessedWord.join(' ');
+    }
+
+    function checkGuess() {
+      let guess = document.getElementById('guess-input').value.toLowerCase();
+      document.getElementById('guess-input').value = '';
+
+      if (guess.length !== secretWord.length) {
+        setMessage('Please enter a word with the correct length.');
+        return;
+      }
+
+      attempts++;
+
+      if (guess === secretWord) {
+        setMessage(`Congratulations! You guessed the word '${secretWord}' correctly!`);
+        return;
+      }
+
+      updateGuessedWord(guess);
+      displayGuessedWord();
+
+      if (attempts >= maxAttempts) {
+        setMessage(`Sorry, you couldn't guess the word. The word was '${secretWord}'.`);
+      }
+    }
+
+    function updateGuessedWord(guess) {
+      for (let i = 0; i < guess.length; i++) {
+        if (guess[i] === secretWord[i]) {
+          guessedWord[i] = guess[i];
+        } else if (secretWord.includes(guess[i])) {
+          guessedWord[i] = '?';
+        }
+      }
+    }
+
+    function setMessage(message) {
+      document.getElementById('message').textContent = message;
+    }
+
+    initializeGuessedWord();
+    displayGuessedWord();
+  </script>
 </body>
 </html>
