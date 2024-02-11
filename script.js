@@ -4,30 +4,24 @@ const multiplierDisplay = document.getElementById('multiplier');
 const upgradeBtn = document.getElementById('upgradeBtn');
 const questList = document.getElementById('questList');
 const leaderboardList = document.getElementById('leaderboardList');
-const clickSound = document.getElementById('clickSound');
+const clickSound = new Audio('click-sound.mp3');
 
 let score = 0;
 let multiplier = 1;
 let upgradeCost = 10;
-let quests = []; // Array to store active quests
+let quests = [];
 
 // Load score, multiplier, and quests from local storage if available
-let savedScore = localStorage.getItem('score');
-let savedMultiplier = localStorage.getItem('multiplier');
-let savedQuests = localStorage.getItem('quests');
-
-if (savedScore !== null) {
-  score = parseInt(savedScore);
+if (localStorage.getItem('score')) {
+  score = parseInt(localStorage.getItem('score'));
 }
 
-if (savedMultiplier !== null) {
-  multiplier = parseInt(savedMultiplier);
-  updateMultiplierDisplay();
+if (localStorage.getItem('multiplier')) {
+  multiplier = parseInt(localStorage.getItem('multiplier'));
 }
 
-if (savedQuests !== null) {
-  quests = JSON.parse(savedQuests);
-  updateQuestLog();
+if (localStorage.getItem('quests')) {
+  quests = JSON.parse(localStorage.getItem('quests'));
 }
 
 // Update the score display
@@ -47,26 +41,23 @@ function updateUpgradeBtn() {
 
 // Update the leaderboard
 function updateLeaderboard() {
-  // Clear previous entries
   leaderboardList.innerHTML = '';
-  // Retrieve and display leaderboard from local storage
-  for (let i = 0; i < localStorage.length; i++) {
-    let key = localStorage.key(i);
-    if (key.startsWith('score')) {
-      let listItem = document.createElement('li');
-      listItem.textContent = `${localStorage.getItem(key)} points`;
-      leaderboardList.appendChild(listItem);
-    }
-  }
+  const scores = Object.entries(localStorage)
+                      .filter(([key, value]) => key.startsWith('score'))
+                      .sort((a, b) => b[1] - a[1]);
+  
+  scores.forEach(([key, value], index) => {
+    const listItem = document.createElement('li');
+    listItem.textContent = `${index + 1}. ${value} points`;
+    leaderboardList.appendChild(listItem);
+  });
 }
 
 // Update the quest log
 function updateQuestLog() {
-  // Clear previous entries
   questList.innerHTML = '';
-  // Populate quest log with available quests
   quests.forEach((quest, index) => {
-    let listItem = document.createElement('li');
+    const listItem = document.createElement('li');
     listItem.textContent = `Quest ${index + 1}: ${quest.name} - Progress: ${quest.progress}/${quest.target}`;
     questList.appendChild(listItem);
   });
@@ -115,6 +106,8 @@ setInterval(function() {
 }, 10000); // Save every 10 seconds
 
 // Initialize quests
-quests.push({ name: 'Click 100 times', target: 100, progress: 0, reward: 50 });
-quests.push({ name: 'Score 1000 points', target: 1000, progress: 0, reward: 100 });
+if (quests.length === 0) {
+  quests.push({ name: 'Click 100 times', target: 100, progress: 0, reward: 50 });
+  quests.push({ name: 'Score 1000 points', target: 1000, progress: 0, reward: 100 });
+}
 updateQuestLog();
