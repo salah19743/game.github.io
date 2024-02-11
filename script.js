@@ -1,22 +1,26 @@
 const clickButton = document.getElementById('clickButton');
 const scoreDisplay = document.getElementById('score');
-const multiplierDisplay = document.getElementById('multiplierValue');
+const multiplierDisplay = document.getElementById('multiplier');
+const upgradeBtn = document.getElementById('upgradeBtn');
+const questList = document.getElementById('questList');
+const leaderboardList = document.getElementById('leaderboardList');
 const clickSound = document.getElementById('clickSound');
 
 let score = 0;
 let multiplier = 1;
+let upgradeCost = 10;
 
-// Load score and multiplier from local storage
-window.onload = function() {
-  if(localStorage.getItem('clickerScore')) {
-    score = parseInt(localStorage.getItem('clickerScore'));
-    updateScore();
-  }
+// Load score from local storage if available
+let savedScore = localStorage.getItem('score');
+if (savedScore !== null) {
+  score = parseInt(savedScore);
+}
 
-  if(localStorage.getItem('clickerMultiplier')) {
-    multiplier = parseInt(localStorage.getItem('clickerMultiplier'));
-    updateMultiplier();
-  }
+// Load multiplier from local storage if available
+let savedMultiplier = localStorage.getItem('multiplier');
+if (savedMultiplier !== null) {
+  multiplier = parseInt(savedMultiplier);
+  updateMultiplierDisplay();
 }
 
 // Update the score display
@@ -25,33 +29,64 @@ function updateScore() {
 }
 
 // Update the multiplier display
-function updateMultiplier() {
-  multiplierDisplay.textContent = multiplier;
+function updateMultiplierDisplay() {
+  multiplierDisplay.textContent = `Multiplier: x${multiplier}`;
 }
 
-// Increment score when button is clicked
+// Update the upgrade button display
+function updateUpgradeBtn() {
+  upgradeBtn.textContent = `Upgrade Multiplier (Cost: ${upgradeCost})`;
+}
+
+// Update the leaderboard
+function updateLeaderboard() {
+  // Clear previous entries
+  leaderboardList.innerHTML = '';
+  // Retrieve and display leaderboard from local storage
+  for (let i = 0; i < localStorage.length; i++) {
+    let key = localStorage.key(i);
+    if (key.startsWith('score')) {
+      let listItem = document.createElement('li');
+      listItem.textContent = `${localStorage.getItem(key)} points`;
+      leaderboardList.appendChild(listItem);
+    }
+  }
+}
+
+// Update the quest log
+function updateQuestLog() {
+  // Clear previous entries
+  questList.innerHTML = '';
+  // Populate quest log with available quests
+  // Implement your quest system here
+}
+
+// Increase score when button is clicked
 clickButton.addEventListener('click', function() {
   score += multiplier;
   updateScore();
-  clickSound.currentTime = 0;
   clickSound.play();
 });
 
-// Save score and multiplier to local storage
-function saveData() {
-  localStorage.setItem('clickerScore', score);
-  localStorage.setItem('clickerMultiplier', multiplier);
-}
-
-// Increase multiplier
-function upgradeMultiplier() {
-  if (score >= 100) {
-    score -= 100;
-    multiplier += 1;
+// Upgrade multiplier when upgrade button is clicked
+upgradeBtn.addEventListener('click', function() {
+  if (score >= upgradeCost) {
+    score -= upgradeCost;
+    multiplier++;
+    upgradeCost *= 2;
     updateScore();
-    updateMultiplier();
-    saveData();
+    updateMultiplierDisplay();
+    updateUpgradeBtn();
   } else {
-    alert("You need at least 100 score to upgrade the multiplier!");
+    alert('Not enough points to upgrade!');
   }
-}
+});
+
+// Update the game state periodically
+setInterval(function() {
+  // Save score and multiplier to local storage
+  localStorage.setItem('score', score);
+  localStorage.setItem('multiplier', multiplier);
+  updateLeaderboard();
+  updateQuestLog();
+}, 10000); // Save every 10 seconds
