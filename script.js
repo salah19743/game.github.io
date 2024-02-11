@@ -10,6 +10,7 @@ let score = 0;
 let multiplier = 1;
 let upgradeCost = 10;
 let quests = [];
+let playerName = '';
 
 // Load score, multiplier, and quests from local storage if available
 if (localStorage.getItem('score')) {
@@ -22,6 +23,10 @@ if (localStorage.getItem('multiplier')) {
 
 if (localStorage.getItem('quests')) {
   quests = JSON.parse(localStorage.getItem('quests'));
+}
+
+if (localStorage.getItem('playerName')) {
+  playerName = localStorage.getItem('playerName');
 }
 
 // Update the score display
@@ -48,7 +53,7 @@ function updateLeaderboard() {
   
   scores.forEach(([key, value], index) => {
     const listItem = document.createElement('li');
-    listItem.textContent = `${index + 1}. ${value} points`;
+    listItem.textContent = `${index + 1}. ${value} points - ${localStorage.getItem(`name_${key}`) || 'Anonymous'}`;
     leaderboardList.appendChild(listItem);
   });
 }
@@ -76,9 +81,10 @@ clickButton.addEventListener('click', function() {
       score += quest.reward;
       quest.progress = 0; // Reset quest progress
       updateScore();
+      updateQuestLog();
+      changeQuest(quest);
     }
   });
-  updateQuestLog();
 });
 
 // Upgrade multiplier when upgrade button is clicked
@@ -95,19 +101,44 @@ upgradeBtn.addEventListener('click', function() {
   }
 });
 
+// Change quest after completion
+function changeQuest(completedQuest) {
+  const index = quests.indexOf(completedQuest);
+  if (index !== -1) {
+    quests.splice(index, 1); // Remove completed quest
+    const newQuest = generateRandomQuest();
+    quests.push(newQuest); // Add new quest
+    updateQuestLog();
+  }
+}
+
+// Generate a random quest
+function generateRandomQuest() {
+  const name = `Click ${Math.floor(Math.random() * 50) + 50} times`;
+  const target = Math.floor(Math.random() * 500) + 500;
+  const reward = Math.floor(Math.random() * 200) + 100;
+  return { name, target, progress: 0, reward };
+}
+
 // Update the game state periodically
 setInterval(function() {
   // Save score, multiplier, and quests to local storage
   localStorage.setItem('score', score);
   localStorage.setItem('multiplier', multiplier);
   localStorage.setItem('quests', JSON.stringify(quests));
+  localStorage.setItem('playerName', playerName);
   updateLeaderboard();
-  updateQuestLog();
 }, 10000); // Save every 10 seconds
 
 // Initialize quests
 if (quests.length === 0) {
-  quests.push({ name: 'Click 100 times', target: 100, progress: 0, reward: 50 });
-  quests.push({ name: 'Score 1000 points', target: 1000, progress: 0, reward: 100 });
+  quests.push(generateRandomQuest());
 }
 updateQuestLog();
+
+// Prompt player for their name
+if (!playerName) {
+  playerName = prompt('Please enter your name for the leaderboard:');
+}
+
+updateLeaderboard();
