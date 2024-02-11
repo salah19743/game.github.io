@@ -1,39 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ultimate Clicker Game</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catch the Moving Object</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Ultimate Clicker Game</h1>
-    <div class="game-area">
-      <button id="clickButton">Click Me!</button>
-      <p>Your Score: <span id="score">0</span></p>
-      <div id="multiplier">Multiplier: x1</div>
-      <div id="upgradeArea">
-        <h2>Upgrades</h2>
-        <button id="upgradeBtn">Upgrade Multiplier (Cost: 10)</button>
-      </div>
-      <div id="questArea">
-        <h2>Quests</h2>
-        <ul id="questList">
-          <!-- Quests will be populated dynamically -->
-        </ul>
-      </div>
+    <h1>Catch the Moving Object Game</h1>
+    <div id="game-container">
+        <div id="object"></div>
     </div>
-    <div class="leaderboard">
-      <h2>Leaderboard</h2>
-      <ol id="leaderboardList">
-        <!-- Leaderboard will be populated dynamically -->
-      </ol>
+    <div id="game-controls">
+        <p>Score: <span id="score">0</span></p>
+        <p>Time left: <span id="time-left">30</span> seconds</p>
+        <button id="start-btn">Start Game</button>
+        <div id="difficulty">
+            <label for="difficulty-select">Select Difficulty:</label>
+            <select id="difficulty-select">
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+            </select>
+        </div>
     </div>
-  </div>
 
-  <audio id="clickSound" src="click-sound.mp3"></audio>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
